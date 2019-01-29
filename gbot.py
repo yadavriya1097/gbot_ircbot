@@ -28,24 +28,34 @@ irc.send("NICK "+botnick+"\n")
 time.sleep(1) 
 irc.send("JOIN "+channel+"\n") 
 
-while 1: 
-    time.sleep(0.1) 
-    try: 
-        text=irc.recv(2040) 
-        print(text) 
-    except Exception: 
-        pass 
+while 1:
+    time.sleep(0.1)
+    try:
+        text=irc.recv(2040)
+        print(text)
+    except Exception:
+        pass
     if text.find("PING")!=-1:
-        irc.send("PONG "+text.split()[1]+"\r\n") 
+        irc.send("PONG "+text.split()[1]+"\r\n")
+
+    elif text.lower().find(":#quit "+ botnick)!=-1 and isAdmin(text):
+        irc.send("PRIVMSG "+channel+" Bye!!\r\n")
+        irc.send("QUIT \n")
+        break
 
     elif text.lower().find("#endclass")!=-1 and isAdmin(text):
         isClass=False
         print(isClass)
         irc.send("PRIVMSG "+channel+" :Class is ended.\r\n")
 
-    elif text.lower().find(":hi")!=-1:
+    elif text.lower().find(":hi "+ botnick)!=-1:
         t1=text.split("!")
         irc.send("PRIVMSG "+channel+ " "+ t1[0]+", Hello!\r\n")
+
+    elif text.lower().find("how are you "+ botnick+"?")!=-1:
+        t1=text.split("!")
+        irc.send("PRIVMSG "+channel+ " "+ t1[0]+", I am a happy bot! Hope you are cheerful too.\r\n")
+
 
     elif text.lower().find(":!")!=-1:
         if isClass:
